@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using MovieEticket.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace MovieEticket
 {
@@ -23,7 +25,10 @@ namespace MovieEticket
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //Database Config
+            services.AddDbContext<EticketDbContext>(options => options.UseSqlServer(Configuration.GetConnectionString("Conn")));
             services.AddControllersWithViews();
+            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +57,7 @@ namespace MovieEticket
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+           EticketDbInitializer.Seed(app);
         }
     }
 }
